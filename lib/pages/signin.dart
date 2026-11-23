@@ -93,17 +93,7 @@ class _SignInPageState extends State<SignInPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 45),
-
-              const Center(
-                child: Icon(
-                  Icons.pets,
-                  size: 75,
-                  color: Color(0xFF55A6D9),
-                ),
-              ),
-
-              const SizedBox(height: 30),
-
+              
               const Text(
                 'Welcome Back!',
                 style: TextStyle(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/api.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -11,18 +12,84 @@ class _SignUpPageState extends State<SignUpPage> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
 
   bool obscurePassword = true;
   bool obscureConfirmPassword = true;
+  bool isLoading = false;
 
   @override
   void dispose() {
     nameController.dispose();
     emailController.dispose();
     passwordController.dispose();
-    confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  void showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
+  Future<void> register() async {
+    final username = nameController.text.trim();
+    final email = emailController.text.trim();
+    final password = passwordController.text;
+
+    if (username.isEmpty ||
+        email.isEmpty ||
+        password.isEmpty) {
+      showMessage('Semua field wajib diisi');
+      return;
+    }
+
+    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+$').hasMatch(email)) {
+      showMessage('Format email tidak valid');
+      return;
+    }
+
+    if (password.length < 6) {
+      showMessage('Password minimal 6 karakter');
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final response = await ApiServices.post(
+        '/auth/register',
+        {
+          'username': username,
+          'email': email,
+          'password': password,
+        },
+      );
+
+      if (!mounted) return;
+
+      if (response is Map && response['success'] == false) {
+        showMessage(response['message'] ?? 'Registrasi gagal');
+        return;
+      }
+
+      showMessage('Registrasi berhasil! Silakan login.');
+
+      Navigator.pop(context);
+    } catch (e) {
+      if (!mounted) return;
+
+      showMessage(
+        e.toString().replaceFirst('Exception: ', ''),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
   }
 
   Widget buildInput({
@@ -80,16 +147,6 @@ class _SignUpPageState extends State<SignUpPage> {
             children: [
               const SizedBox(height: 25),
 
-              const Center(
-                child: Icon(
-                  Icons.pets,
-                  size: 70,
-                  color: Color(0xFF55A6D9),
-                ),
-              ),
-
-              const SizedBox(height: 25),
-
               const Text(
                 'Create Account',
                 style: TextStyle(
@@ -141,30 +198,12 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
 
               const SizedBox(height: 18),
-
-              buildInput(
-                label: 'Confirm Password',
-                hint: 'Confirm your password',
-                controller: confirmPasswordController,
-                icon: Icons.lock_outline,
-                obscure: obscureConfirmPassword,
-                isPassword: true,
-                toggleVisibility: () {
-                  setState(() {
-                    obscureConfirmPassword = !obscureConfirmPassword;
-                  });
-                },
-              ),
-
-              const SizedBox(height: 28),
-
+    
               SizedBox(
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton(
-                  onPressed: () {
-                    // API register akan dipasang di sini.
-                  },
+                  onPressed: isLoading ? null : register,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF55A6D9),
                     foregroundColor: Colors.white,
@@ -172,13 +211,22 @@ class _SignUpPageState extends State<SignUpPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text(
-                    'Create Account',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  child: isLoading
+                      ? const SizedBox(
+                          height: 22,
+                          width: 22,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : const Text(
+                          'Create Account',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ),
               ),
 
@@ -204,10 +252,10 @@ class _SignUpPageState extends State<SignUpPage> {
                   ],
                 ),
               ),
-            ],
+            ]
           ),
         ),
-      ),
+      )
     );
   }
 }
