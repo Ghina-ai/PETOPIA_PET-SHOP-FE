@@ -1,17 +1,32 @@
-import 'package:fe/pages/homepage.dart';
 import 'package:flutter/material.dart';
 
+import 'pages/homepage.dart';
+import 'pages/signin.dart';
+import 'pages/signup.dart';
+
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const PetopiaApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class PetopiaApp extends StatelessWidget {
+  const PetopiaApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home : Homepage(),);
+      title: 'Petopia',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorSchemeSeed: const Color(0xFF55A6D9),
+        useMaterial3: true,
+      ),
+      home: const SignInPage(),
+      routes: {
+        '/login': (context) => const SignInPage(),
+        '/register': (context) => const SignUpPage(),
+        '/home': (context) => const Homepage(),
+      },
+    );
   }
 }
-
