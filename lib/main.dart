@@ -1,3 +1,4 @@
+import 'package:fe/pages/splasshscreen.dart';
 import 'package:flutter/material.dart';
 
 import 'pages/homepage.dart';
@@ -21,12 +22,12 @@ class PetopiaApp extends StatelessWidget {
         colorSchemeSeed: const Color(0xFF55A6D9),
         useMaterial3: true,
       ),
-      home: const SignInPage(),
       routes: {
         '/login': (context) => const SignInPage(),
         '/register': (context) => const SignUpPage(),
         '/home': (context) => const Homepage(),
       },
+      initialRoute: '/login',
     );
   }
 }
