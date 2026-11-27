@@ -76,8 +76,8 @@ class _SignUpPageState extends State<SignUpPage> {
 
       showMessage('Registrasi berhasil! Silakan login.');
 
-      Navigator.pop(context);
-    } catch (e) {
+      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);   
+      } catch (e) {
       if (!mounted) return;
 
       showMessage(
@@ -205,7 +205,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 child: ElevatedButton(
                   onPressed: isLoading ? null : register,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF55A6D9),
+                    backgroundColor: const Color(0xFFF28C52),
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -244,7 +244,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       child: const Text(
                         'Sign In',
                         style: TextStyle(
-                          color: Color(0xFF55A6D9),
+                          color: Color(0xFFF28C52),
                           fontWeight: FontWeight.bold,
                         ),
                       ),

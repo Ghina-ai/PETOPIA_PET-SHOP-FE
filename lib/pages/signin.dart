@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../services/api.dart';
 
 class SignInPage extends StatefulWidget {
@@ -28,9 +29,7 @@ class _SignInPageState extends State<SignInPage> {
 
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Email dan password wajib diisi'),
-        ),
+        const SnackBar(content: Text('Email dan password wajib diisi')),
       );
       return;
     }
@@ -40,38 +39,37 @@ class _SignInPageState extends State<SignInPage> {
     });
 
     try {
-      final response = await ApiServices.post(
-        '/auth/login',
-        {
-          'email': email,
-          'password': password,
-        },
-      );
+      final response = await ApiServices.post('/auth/login', {
+        'email': email,
+        'password': password,
+      });
 
       if (response['success'] == true) {
         final token = response['data']['token'];
+        final user = response['data']['user'];
+        final roleId = user['roleId'];
 
         await ApiServices.saveToken(token);
+
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setInt('roleId', roleId);
 
         if (!mounted) return;
 
         Navigator.pushNamedAndRemoveUntil(
-          context,
-          '/home',
-          (route) => false,
+          context, 
+          '/main', 
+          (route) => false
         );
+        
       } else {
-        throw Exception(
-          response['message'] ?? 'Login gagal',
-        );
+        throw Exception(response['message'] ?? 'Login gagal');
       }
     } catch (e) {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString().replaceFirst('Exception: ', '')),
-        ),
+        SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
       );
     } finally {
       if (mounted) {
@@ -93,23 +91,17 @@ class _SignInPageState extends State<SignInPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 45),
-              
+
               const Text(
                 'Welcome Back!',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
               ),
 
               const SizedBox(height: 8),
 
               const Text(
                 'Sign in to continue your journey with Petopia.',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: Colors.grey, fontSize: 14),
               ),
 
               const SizedBox(height: 35),
@@ -144,9 +136,7 @@ class _SignInPageState extends State<SignInPage> {
                   prefixIcon: const Icon(Icons.lock_outline),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      obscurePassword
-                          ? Icons.visibility_off
-                          : Icons.visibility,
+                      obscurePassword ? Icons.visibility_off : Icons.visibility,
                     ),
                     onPressed: () {
                       setState(() {
@@ -170,16 +160,14 @@ class _SignInPageState extends State<SignInPage> {
                 child: ElevatedButton(
                   onPressed: isLoading ? null : login,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF55A6D9),
+                    backgroundColor: const Color(0xFFF28C52),
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                   child: isLoading
-                      ? const CircularProgressIndicator(
-                          color: Colors.white,
-                        )
+                      ? const CircularProgressIndicator(color: Colors.white)
                       : const Text(
                           'Sign In',
                           style: TextStyle(
@@ -204,7 +192,7 @@ class _SignInPageState extends State<SignInPage> {
                       child: const Text(
                         'Sign Up',
                         style: TextStyle(
-                          color: Color(0xFF55A6D9),
+                          color: Color(0xFFF28C52),
                           fontWeight: FontWeight.bold,
                         ),
                       ),

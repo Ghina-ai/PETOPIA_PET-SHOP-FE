@@ -4,14 +4,15 @@ class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
   final List<String> animalImages = const [
-    'assets/Animals wallpaper iPhone.jpg',
-    'assets/Beautiful Guinea Pig, Guinea, Pig, Pet PNG Transparent Image and Clipart for Free Download.jpg',
-    'assets/download (72).jpg',
-    'assets/download (73).jpg',
-    'assets/download (74).jpg',
-    'assets/download (75).jpg',
-    'assets/Scavenger Hunt.jpg',
-    'assets/토끼.jpg',
+    'assets/splassscreen/Animals wallpaper iPhone.jpg',
+    'assets/splassscreen/Beautiful Guinea Pig, Guinea, Pig, Pet PNG Transparent Image and Clipart for Free Download.jpg',
+    'assets/splassscreen/download (72).jpg',
+    'assets/splassscreen/download (73).jpg',
+    'assets/splassscreen/download (74).jpg',
+    'assets/splassscreen/download (75).jpg',
+    'assets/splassscreen/Scavenger Hunt.jpg',
+    'assets/splassscreen/토끼.jpg',
+    'assets/splassscreen/golden.jpg',
   ];
 
   @override
@@ -25,6 +26,7 @@ class SplashScreen extends StatelessWidget {
             end: Alignment.bottomCenter,
             colors: [
               Color(0xFFF28C52),
+              Color(0xFFFFC49D),
             ],
           ),
         ),
@@ -80,9 +82,9 @@ class SplashScreen extends StatelessWidget {
                   'Petopia',
                   style: TextStyle(
                     fontSize: 43,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.bold,
                     letterSpacing: 1.5,
-                    color: Color(0xFF9E4E27),
+                    color: Color.fromARGB(255, 255, 255, 255),
                   ),
                 ),
 
